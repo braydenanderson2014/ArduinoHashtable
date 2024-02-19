@@ -42,6 +42,9 @@ The `Hashtable` class is designed to offer a dynamic and scalable hash table wit
 - `bool operator!=(const Iterator& other)` : Return currentEntry != other.currentEntry || currentBucket != other.currentBucket
 - `Iterator& operator++()` : Moves iteration to the next element, the returns that element
 - `Entry* operator*()` : returns currentEntry
+- `find()` : Returns a value associated with the key
+- `getKey()` Returns a Vector of Keys
+- `getValues()` Returns a Vector of Values
 
 
 
@@ -67,6 +70,20 @@ If you want to Utilize this Library. Please include the
 #include <Hashtable.h> 
 ```
 
+
+# Arduino:
+## ChangeLog
+### Version 1.0.0:
+* Initial Release. Based off of PlatformIO version v1.1.2 
+### Version 1.0.1:
+* Added New getKey() Function for Iterator
+* Added New getValue() Function for Iterator
+* Added New find() Function for Iterator.
+* NOTE: All 3 functions are not tested and should be used with Caution. 
+
+=============================================================================
+
+# PlatformIO:
 ## ChangeLog
 ### Version 1.0.0:
 * Initial Release 
@@ -117,8 +134,12 @@ If you want to Utilize this Library. Please include the
 ### Version 1.1.1: 
 * Emergency Patch: Fixed an issue where the Constructor wasnt properly overloaded.
 * Adjusted Library Keywords
-### Version 1.1.2: [Latest-Release]
+### Version 1.1.2: 
 * Added new getElement() Function that returns an element at a specific index in the Hashtable
+### Version 1.1.3: [Latest-Release]
+* Added New getKey() Function for Iterator
+* Added New getValue() Function for Iterator
+* Added New find() Function for Iterator.
 
 
 

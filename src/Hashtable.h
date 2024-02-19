@@ -256,6 +256,40 @@ public:
             goToNextEntry();
             return *this;
         }
+
+        Iterator& find(const K& key) {
+            int index = hashtable->hash(key);
+            currentBucket = index;
+            currentEntry = hashtable->table[index];
+            while (currentEntry != nullptr) {
+                if (currentEntry->key == key) {
+                    return *this;
+                }
+                currentEntry = currentEntry->next;
+            }
+            goToNextEntry();
+            return *this;
+        }
+
+        SimpleVector<K> getKeys() {
+            SimpleVector<K> keys;
+            for (int i = 0; i < hashtable->TABLE_SIZE; ++i) {
+                for (Entry* entry = hashtable->table[i]; entry != nullptr; entry = entry->next) {
+                    keys.put(entry->key);
+                }
+            }
+            return keys;
+        }
+
+        SimpleVector<V> getValues() {
+            SimpleVector<V> values;
+            for (int i = 0; i < hashtable->TABLE_SIZE; ++i) {
+                for (Entry* entry = hashtable->table[i]; entry != nullptr; entry = entry->next) {
+                    values.put(entry->value);
+                }
+            }
+            return values;
+        }
     };
 
     /**
@@ -702,6 +736,8 @@ public:
         }
         return values;
     }
+
+
 };
 
 #endif // HASHTABLE_H
