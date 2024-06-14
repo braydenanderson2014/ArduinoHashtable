@@ -24,7 +24,7 @@ struct KeyHash<String> {
         unsigned long hash = 0;
         for (char c : key) {
             hash = 31 * hash + c;
-        }     
+        }
         return hash;
     }
 };
@@ -88,12 +88,12 @@ private:
     /**
      * @brief A struct representing a key-value pair
      * @details This struct represents a key-value pair in the hash table.
-     * 
+     *
      * @note This struct is private because it is only used internally.
      * @param key The key of the pair
      * @param value The value of the pair
      * @param next A pointer to the next entry in the bucket
-     * 
+     *
     */
     struct Entry {
         K key;
@@ -108,7 +108,7 @@ private:
     int count;  // The number of elements in the table
     float loadFactorThreshold = 0.7; // The load factor threshold for resizing
     Hash hashFunction; // The hash function to use
-        
+
 // Simplified hash function that delegates to the Hash functor
     /**
      * @brief Hashes a key
@@ -124,14 +124,14 @@ private:
      * @brief Resize the hash table
      * @details This function resizes the hash table to the specified size.
      * @param newSize The new size of the hash table
-     * 
+     *
      * @note This function is private because it is only used internally.
      * @note This function will rehash all elements in the table.
      * @note This function will delete the old table.
      * @note This function will update the TABLE_SIZE member variable.
      * @note This function will return false if the memory allocation fails.
      * @note This function will return true if the resize is successful.
-     * 
+     *
      * @return Whether or not the resize was successful
     */
     bool resize(int newSize) {
@@ -160,7 +160,7 @@ public:
     /**
      * @brief A struct representing a key-value pair
      * @details This struct represents a key-value pair in the hash table.
-     * 
+     *
      * @param key The key of the pair
      * @param value The value of the pair
     */
@@ -177,7 +177,7 @@ public:
         /**
          * @brief Move to the next entry in the hash table
          * @details This function moves the iterator to the next entry in the hash table.
-         * 
+         *
         */
         void goToNextEntry() {
             if (currentEntry && currentEntry->next) {
@@ -197,7 +197,7 @@ public:
         /**
          * @brief Dereference operator
          * @details This operator returns a key-value pair.
-         * 
+         *
          * @note This operator is defined inside the Iterator class.
          * @note This operator is used to dereference the iterator.
          * @note This operator returns a key-value pair.
@@ -209,15 +209,15 @@ public:
         /**
          * @brief Constructor
          * @details This constructor creates an iterator for the hash table.
-         * 
+         *
          * @note This constructor is defined inside the Iterator class.
          * @note This constructor is used to create an iterator for the hash table.
          * @note This constructor takes a pointer to the hash table, the current bucket, and the current entry.
-         * 
+         *
          * @param ht A pointer to the hash table
          * @param bucket The current bucket
          * @param entry The current entry
-         * 
+         *
         */
         Iterator(const Hashtable<K, V, Hash>* ht, int bucket, Entry* entry)
         : hashtable(ht), currentBucket(bucket), currentEntry(entry) {
@@ -229,13 +229,13 @@ public:
         /**
          * @brief Inequality operator
          * @details This operator checks if two iterators are not equal.
-         * 
+         *
          * @note This operator is defined inside the Iterator class.
          * @note This operator is used to check if two iterators are not equal.
          * @note This operator returns true if the iterators are not equal, otherwise it returns false.
-         * 
+         *
          * @param other The other iterator to compare to
-         * 
+         *
          * @return Whether or not the iterators are not equal
         */
         bool operator!=(const Iterator& other) const {
@@ -245,11 +245,11 @@ public:
         /**
          * @brief Prefix increment operator
          * @details This operator increments the iterator to the next entry in the hash table.
-         * 
+         *
          * @note This operator is defined inside the Iterator class.
          * @note This operator is used to increment the iterator to the next entry in the hash table.
          * @note This operator returns a reference to the iterator.
-         * 
+         *
          * @return A reference to the iterator
         */
         Iterator& operator++() {
@@ -295,11 +295,11 @@ public:
     /**
      * @brief Get an iterator pointing to the first element in the hash table
      * @details This function returns an iterator pointing to the first element in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get an iterator pointing to the first element in the hash table.
      * @note This function returns an iterator pointing to the first element in the hash table.
-     * 
+     *
      * @return An iterator pointing to the first element in the hash table
     */
     Iterator begin() const {
@@ -314,11 +314,11 @@ public:
     /**
      * @brief Get an iterator pointing to the end of the hash table
      * @details This function returns an iterator pointing to the end of the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get an iterator pointing to the end of the hash table.
      * @note This function returns an iterator pointing to the end of the hash table.
-     * 
+     *
      * @return An iterator pointing to the end of the hash table
     */
     Iterator end() const {
@@ -329,9 +329,9 @@ public:
     /**
      * @brief Constructor
      * @details This constructor creates a hash table with the specified initial capacity and load factor.
-     * 
+     *
      * @param INITIAL_TABLE_SIZE The initial capacity of the hash table
-     * 
+     *
     */
     Hashtable() : TABLE_SIZE(INITIAL_TABLE_SIZE), count(0), hashFunction() {
         table = new Entry*[TABLE_SIZE]();
@@ -339,17 +339,34 @@ public:
 
     /**
      * @brief Constructor
+     * @details A copy constructor is needed so the table is correclty copied
+    */
+    Hashtable(const Hashtable &h) {
+      TABLE_SIZE = h.TABLE_SIZE;
+      count = h.count;
+      loadFactorThreshold = h.loadFactorThreshold;
+      hashFunction = h.hashFunction;
+
+      // We need to copy the table manually
+      table = new Entry*[TABLE_SIZE]();
+      for (int i = 0; i < count; i++) {
+        table[i] = h.table[i];
+      }
+    }
+
+    /**
+     * @brief Constructor
      * @details This constructor creates a hash table with the specified initial capacity and load factor.
-     * 
+     *
      * @param initialCapacity The initial capacity of the hash table
      * @param loadFactor The load factor of the hash table
-     * 
+     *
      * @note This constructor is defined inside the Hashtable class.
      * @note This constructor is used to create a hash table with the specified initial capacity and load factor.
      * @note This constructor takes the initial capacity and load factor as parameters.
-     * 
+     *
     */
-    Hashtable(size_t initialCapacity, float loadFactor) 
+    Hashtable(size_t initialCapacity, float loadFactor)
         : TABLE_SIZE(initialCapacity), count(0), loadFactorThreshold(loadFactor), hashFunction() {
         table = new Entry*[TABLE_SIZE]();
         // Initialize buckets to nullptr...
@@ -358,10 +375,10 @@ public:
     /**
      * @brief Destructor
      * @details This destructor destroys the hash table.
-     * 
+     *
      * @note This destructor is defined inside the Hashtable class.
      * @note This destructor is used to destroy the hash table.
-     * 
+     *
     */
     ~Hashtable() {
         clear();
@@ -371,14 +388,14 @@ public:
     /**
      * @brief Put a key-value pair in the hash table
      * @details This function puts a key-value pair in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to put a key-value pair in the hash table.
      * @note This function takes the key and value as parameters.
-     * 
+     *
      * @param key The key of the pair
      * @param value The value of the pair
-     * 
+     *
      * @note If the key already exists, the value will be overwritten.
     */
     void put(const K& key, const V& value) {
@@ -403,19 +420,19 @@ public:
             }
         }
     }
-    
+
     /**
      * @brief Get the value associated with a key
      * @details This function gets the value associated with a key.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the value associated with a key.
      * @note This function takes the key as a parameter.
-     * 
+     *
      * @param key The key to get the value for
-     * 
+     *
      * @note If the key does not exist, a nullptr will be returned.
-     * 
+     *
      * @return The value associated with the key
     */
     V* get(const K& key) const {
@@ -445,11 +462,11 @@ public:
     /**
      * @brief Check if a key exists in the hash table
      * @details This function checks if a key exists in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to check if a key exists in the hash table.
      * @note This function takes the key as a parameter.
-     * 
+     *
      * @param key The key to check for
     */
     bool exists(const K& key) const {
@@ -469,14 +486,14 @@ public:
     /**
      * @brief Check if a key exists in the hash table
      * @details This function checks if a key exists in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to check if a key exists in the hash table.
      * @note This function takes the key as a parameter.
-     * 
+     *
      * @param key The key to check for
      * @param value The value to check for
-     * 
+     *
      * @return Whether or not the key exists in the hash table
     */
     bool exists(const K& key, V& value) const {
@@ -495,13 +512,13 @@ public:
     /**
      * @brief Remove a key-value pair from the hash table
      * @details This function removes a key-value pair from the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to remove a key-value pair from the hash table.
      * @note This function takes the key as a parameter.
-     * 
+     *
      * @param key The key to remove
-     * 
+     *
      * @return Whether or not the key was removed
     */
     bool remove(const K& key) {
@@ -529,7 +546,7 @@ public:
     /**
      * @brief Clear the hash table
      * @details This function clears the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to clear the hash table.
     */
@@ -555,10 +572,10 @@ public:
     /**
      * @brief Get the load factor of the hash table
      * @details This function gets the load factor of the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the load factor of the hash table.
-     * 
+     *
      * @return The load factor of the hash table
     */
     float loadFactor() const {
@@ -568,10 +585,10 @@ public:
     /**
      * @brief Checks to see if the load factor is greater than or equal to the load factor threshold and resizes, and rehashes if it is
      * @details This function checks to see if the load factor is greater than or equal to the load factor threshold and resizes, and rehashes if it is.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to check to see if the load factor is greater than or equal to the load factor threshold and resizes, and rehashes if it is.
-     * 
+     *
     */
     void checkLoadFactorAndRehash() {
         if (loadFactor() >= loadFactorThreshold) {
@@ -584,7 +601,7 @@ public:
      * @brief Get the size of the hash table (the number of buckets)
      * @details This function gets the size of the hash table (the number of buckets).
      * @return The size of the hash table
-     * 
+     *
     */
     size_t bucketCount() const {
         return TABLE_SIZE;
@@ -593,13 +610,13 @@ public:
     /**
      * @brief Get the size of a bucket
      * @details This function gets the size of a bucket.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the size of a bucket.
      * @note This function takes the index of the bucket as a parameter.
-     * 
+     *
      * @param index The index of the bucket
-     * 
+     *
      * @return The size of the bucket
     */
     size_t bucketSize(size_t index) const {
@@ -615,10 +632,10 @@ public:
     /**
      * @brief Get the size of the hash table (the Capacity)
      * @details This function gets the size of the hash table (the Capacity).
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the size of the hash table (the Capacity).
-     * 
+     *
      * @return The Capacity of the hash table
     */
     int size() const {
@@ -628,10 +645,10 @@ public:
     /**
      * @brief Check if the hash table is empty
      * @details This function checks if the hash table is empty.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to check if the hash table is empty.
-     * 
+     *
      * @return Whether or not the hash table is empty
     */
     bool isEmpty() const {
@@ -641,10 +658,10 @@ public:
     /**
      * @brief Get the number of elements in the hash table
      * @details This function gets the number of elements in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the number of elements in the hash table.
-     * 
+     *
      * @return The number of elements in the hash table
     */
     int elements() const {
@@ -654,10 +671,10 @@ public:
     /**
      * @brief Get the keys in the hash table
      * @details This function gets the keys in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the keys in the hash table.
-     * 
+     *
      * @return The keys in the hash table
     */
     SimpleVector<K> keys() const {
@@ -673,12 +690,12 @@ public:
     /**
      * @brief Checks to see if the key exists in the hash table
      * @details This function checks to see if the key exists in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to check to see if the key exists in the hash table.
-     * 
+     *
      * @param key The key to check for
-     * 
+     *
      * @return Whether or not the key exists in the hash table
     */
     bool containsKey(const K& key) const {
@@ -696,12 +713,12 @@ public:
      /**
       * @brief Checks to see if the value exists in the hash table
       * @details This function checks to see if the value exists in the hash table.
-      * 
+      *
       * @note This function is defined inside the Hashtable class.
       * @note This function is used to check to see if the value exists in the hash table.
-      * 
+      *
       * @param value The value to check for
-      * 
+      *
       * @return Whether or not the value exists in the hash table
     */
     bool containsValue(const V& value) const {
@@ -721,10 +738,10 @@ public:
     /**
      * @brief Get the values in the hash table
      * @details This function gets the values in the hash table.
-     * 
+     *
      * @note This function is defined inside the Hashtable class.
      * @note This function is used to get the values in the hash table.
-     * 
+     *
      * @return The values in the hash table
     */
     SimpleVector<V> values() const {
