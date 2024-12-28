@@ -174,7 +174,7 @@ int main() {
     }
 
     // Iterate through the keys
-    Hashtable<int, String>::HashtableIterator it = dictionary.keys();
+    Hashtable<int, String>::Iterator it = dictionary.keys();
     while (it.hasNext()) {
         int key = it.next();
         Serial.println("Key" + key);
