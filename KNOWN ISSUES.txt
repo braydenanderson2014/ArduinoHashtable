@@ -1,0 +1,14 @@
+KNOWN ISSUES:
+
+* get() and getElement() dont seem to be returning values. With certain debugging steps, it appears the hashtable cant find the key specified even if its in the table.
+
+* Resizing can cause data corruption. My testing has confirmed the last two lines in the Hashtable appear to be corrupted.
+
+
+
+For more info please visit the main Repository at : https://github.com/braydenanderson2014/C-Arduino-Libraries
+
+Please consider supporting my development: https://gofund.me/923e5f10
+
+
+PLEASE NOTE: ALL ISSUES POSTED TO THIS REPOSITORY WILL BE MOVED TO THE MAIN REPOSITORY ONCE VERIFIED!!!
