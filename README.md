@@ -111,6 +111,11 @@ This is to make sure that empty data is printed as empty and not garbage data.
 return Iterator(this, TABLE_SIZE, nullptr);
 ```
 which is exactly what end() already has inside. This is just to be neater.
+### Version 1.0.2: - BETA
+* Removed unnecessary print statements left behind from testing. 
+* Update is being used to properly progress Arduino Library Manager to next available version due to an error in last update creation. 
+* No other changes made.
+
 
 =============================================================================
 
@@ -171,7 +176,7 @@ which is exactly what end() already has inside. This is just to be neater.
 * Added New getKey() Function for Iterator
 * Added New getValue() Function for Iterator
 * Added New find() Function for Iterator.
-### Version 1.1.3: [Latest-Release]
+### Version 1.1.3: 
 * RESOLVED ISSUE: Iterator Iterates out of bounds (Issue #85)
 * RESOLVED ISSUE: Resizing corrupts data in hashtable (Issue #81)
 * RESOLVED ISSUE: get() and getElement() returning incorrectly (Issue #82)
@@ -202,6 +207,10 @@ This is to make sure that empty data is printed as empty and not garbage data.
 return Iterator(this, TABLE_SIZE, nullptr);
 ```
 which is exactly what end() already has inside. This is just to be neater.
+### Version 1.1.4: - BETA [CURRENT-RELEASE]
+* Removed unnecessary print statements left behind from testing. 
+* Update is being used to properly progress Arduino Library Manager to next available version due to an error in last update creation. 
+* No other changes made.
 
 
 
