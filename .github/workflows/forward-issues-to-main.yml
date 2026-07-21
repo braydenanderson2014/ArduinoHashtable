@@ -46,7 +46,7 @@ jobs:
             const CLOSE_SOURCE_PULL_REQUEST = String(core.getInput("close_source_pull_requests") || "true").toLowerCase() !== "false";
 
             const getProjectNode = async (owner, projectNumber) => {
-              const query = `
+              const userQuery = `
                 query($owner: String!, $number: Int!) {
                   user(login: $owner) {
                     projectV2(number: $number) {
@@ -69,6 +69,24 @@ jobs:
                       }
                     }
                   }
+                }
+              `;
+
+              try {
+                const userResponse = await github.graphql(userQuery, {
+                  owner,
+                  number: projectNumber
+                });
+
+                if (userResponse.user?.projectV2) {
+                  return userResponse.user.projectV2;
+                }
+              } catch (error) {
+                core.info(`User project lookup failed for ${owner}/${projectNumber}: ${error.message}`);
+              }
+
+              const orgQuery = `
+                query($owner: String!, $number: Int!) {
                   organization(login: $owner) {
                     projectV2(number: $number) {
                       id
@@ -93,12 +111,20 @@ jobs:
                 }
               `;
 
-              const response = await github.graphql(query, {
-                owner,
-                number: projectNumber
-              });
+              try {
+                const orgResponse = await github.graphql(orgQuery, {
+                  owner,
+                  number: projectNumber
+                });
 
-              return response.user?.projectV2 || response.organization?.projectV2 || null;
+                if (orgResponse.organization?.projectV2) {
+                  return orgResponse.organization.projectV2;
+                }
+              } catch (error) {
+                core.info(`Organization project lookup failed for ${owner}/${projectNumber}: ${error.message}`);
+              }
+
+              return null;
             };
 
             const setProjectTransferStatus = async (projectId, itemId, fields, value) => {
