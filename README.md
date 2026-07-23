@@ -1,284 +1,230 @@
-# Hashtable Class
+# **Hashtable Library**
+🚀 **A lightweight and efficient Hashtable implementation for Arduino**
 
-The `Hashtable` class is a C++ template class that provides an implementation of a hash table for storing key-value pairs. It allows you to efficiently store and retrieve data using keys, similar to a dictionary or map in other programming languages.
+## 📖 **Overview**
+The `Hashtable` library provides an efficient way to store key-value pairs in an Arduino environment. It supports various key types, handles collisions, and allows dynamic resizing for optimal performance.
 
-## Overview
+---
+## 📚 **API Reference**
 
-The `Hashtable` class is designed to offer a dynamic and scalable hash table with the following features:
+### 🔹 **Hashtable Methods**
 
-- **Dynamic Sizing**: The hash table dynamically resizes itself when the load factor exceeds a specified threshold, ensuring efficient memory usage.
-- **Collision Handling**: It uses separate chaining to handle collisions, allowing multiple key-value pairs with the same hash value to be stored and retrieved correctly.
-- **Iterator Support**: You can iterate through the keys in the hash table using iterators, making it easy to perform operations on the keys and their associated values.
+| Function | Description |
+|----------|-------------|
+| `Hashtable()` | Constructs a new hashtable with the default size. |
+| `Hashtable(size_t initialCapacity, float loadFactor)` | Constructs a hashtable with a specified size and load factor. |
+| `void put(const K& key, const V& value)` | Inserts a key-value pair into the hashtable. Overwrites if the key exists. |
+| `V* get(const K& key) const` | Retrieves the value associated with a key. Returns `nullptr` if key is not found. [WARNING]: Returns a pointer and not the value itself |
+| `V getElement(const K& key) const` | Retrieves the value associated with a key or returns a default-constructed value if not found. |
+| `bool getElement(const K& key, V* value) const` | Retrieves the value and stores it in `value` if key exists. Returns `true` if found. |
+| `bool exists(const K& key) const` | Checks if a key exists in the hashtable. |
+| `bool remove(const K& key)` | Removes a key-value pair from the hashtable. Returns `true` if removed. |
+| `void clear()` | Clears the hashtable and frees memory. |
+| `float loadFactor() const` | Returns the current load factor. |
+| `bool checkLoadFactorAndRehash()` | Checks and rehashes the table if the load factor threshold is exceeded. |
+| `size_t bucketCount() const` | Returns the number of buckets. |
+| `size_t bucketSize(size_t index) const` | Returns the number of elements in a given bucket. |
+| `bool isEmpty() const` | Returns `true` if the hashtable is empty. |
+| `int elements() const` | Returns the total number of elements stored. |
+| `SimpleVector<K> keys() const` | Returns a vector of all keys. |
+| `SimpleVector<V> values() const` | Returns a vector of all values. |
+| `bool containsKey(const K& key) const` | Checks if the given key exists in the table. |
+| `bool containsValue(const V& value) const` | Checks if the given value exists in the table. |
+| `V& operator[](const K& key)` | Accesses elements by key. If key does not exist, inserts a new default value. |
+| `void debugIterator()` | Prints all key-value pairs in the hashtable using an iterator. |
 
-## WARNING: This Library Utilizes POINTERS *. This is due to the Libraries ability to utilize any return type. (Bool, String, int, float, etc)
+---
+## 🛠 **Usage Examples**
 
-### Key Features
-
-- `put(K key, V value)`: Associates the given key with the specified value in the hash table.
-- `get(K key)`: Retrieves the pointer to the value associated with the given key.
-- `getElement(K key)` : Retrieves the value associated with the given key
-- `remove(K key)`: Removes the key-value pair associated with the given key.
-- `clear()`: Clears all key-value pairs from the hash table.
-- `size()`: Returns the size of the table.
-- `elements()`: Returns the number of elements in the table.
-- `isEmpty()`: Checks if the hash table is empty.
-- `keys()`: Returns an iterator for iterating over the keys in the hash table.
-- `merge(const Hashtable<K, V>& other)`: Merges the contents of another hash table into the current one.
-- `containsKey(const K& key)`: Check if a Table contains a key.
-- `containsValue(const V& value)`: Check if a Table contains a Value.
-- `begin()` : Begins Iteration
-- `end()` : ends Iteration
-- `loadFactor()` : Returns calculated load factor
-- `checkLoadFactorAndRehash()`: checks the load factor and rehashes the table if needed
-- `bucketCount()` : returns the number of buckets in the table
-- `bucketSize()` : returns the size of a bucket in the table
-- `values()` : Returns an iterator for iterating over the values in the hash table.
-- `exists()` : Checks to see if a item exists on the table.
-
-
-#### Iterator Functions
-
-- `Iterator const Hashtable<K, V, Hash>* ht, int bucket, Entry* entry): hashtable(ht), currentBucket(bucket), currentEntr (entry) ` : Constructor
-- `bool operator!=(const Iterator& other)` : Return currentEntry != other.currentEntry || currentBucket != other.currentBucket
-- `Iterator& operator++()` : Moves iteration to the next element, the returns that element
-- `Entry* operator*()` : returns currentEntry
-- `find()` : Returns a value associated with the key
-- `getKey()` Returns a Vector of Keys
-- `getValues()` Returns a Vector of Values
-
-
-
-## Usage
-
-To use the `Hashtable` class, follow these steps:
-
-1. Include the `Hashtable.h` header in your C++ program.
-2. Create an instance of the `Hashtable` class with specific data types for keys and values.
-3. Use the provided methods to add, retrieve, or remove key-value pairs from the hash table.
-
-
-## Installation
-
-```powershell
-git clone "https://github.com/braydenanderson2014/C-Arduino-Libraries/tree/main/Hashtable.git"
-
-```
-## Header
-
-If you want to Utilize this Library. Please include the 
-```cpp 
-#include <Hashtable.h> 
-```
-
-
-# Arduino:
-## ChangeLog
-### Version 1.0.0:
-* Initial Release. Based off of PlatformIO version v1.1.2 
-### Version 1.0.1- BETA:
-* Added New getKey() Function for Iterator
-* Added New getValue() Function for Iterator
-* Added New find() Function for Iterator.
-* NOTE: All 3 functions are not tested and should be used with Caution. 
-### Version 1.0.1: 
-* RESOLVED ISSUE: Iterator Iterates out of bounds (Issue #85)
-* RESOLVED ISSUE: Resizing corrupts data in hashtable (Issue #81)
-* RESOLVED ISSUE: get() and getElement() returning incorrectly (Issue #82)
-* Added new operator[] function that allows you to access elements by index in the Hashtable
-* Added new getBucket() function that returns the bucket at a specific index in the Hashtable
-* Added new getBucketSize() function that returns the size of a bucket at a specific index in the Hashtable
-* Added new debugIterator() function that iterates the table and prints out the [key, value] pairs.
-* Adjusted Iterator operator* function. 
-[FROM THIS]
+### 🔹 **Basic Usage**
 ```cpp
-    KeyValuePair operator*() const {
-        
-        return KeyValuePair{currentEntry->key, currentEntry->value};
-    }
-```
-[TO THIS]
-```cpp
-    KeyValuePair operator*() const {
-        if (!currentEntry) {
-            return KeyValuePair{"", ""}; // Return an empty key-value pair if invalid
-        }
-        return KeyValuePair{currentEntry->key, currentEntry->value};
-    }
-```
-This is to make sure that empty data is printed as empty and not garbage data.
-* Adjusted begin() function to return end() instead of 
-```cpp 
-return Iterator(this, TABLE_SIZE, nullptr);
-```
-which is exactly what end() already has inside. This is just to be neater.
-### Version 1.0.2: - BETA
-* Removed unnecessary print statements left behind from testing. 
-* Update is being used to properly progress Arduino Library Manager to next available version due to an error in last update creation. 
-* No other changes made.
+#include <Arduino.h>
+#include "Hashtable.h"
 
+Hashtable<String, int> hashTable;
 
-=============================================================================
+void setup() {
+    Serial.begin(9600);
+    hashTable.put("Temperature", 25);
+    hashTable.put("Humidity", 60);
 
-# PlatformIO:
-## ChangeLog
-### Version 1.0.0:
-* Initial Release 
-### Version 1.0.1:
-* Added Example for how the library works (Example.cpp)
-* Added Example for how the library works (Example2.cpp)
-* Please Note, This Library Has not been Tested in any Shape or form, USE AT YOUR OWN RISK
-* Although this library has not been tested, We do encourage you to use this library so we can find bugs and fix them.
-### Version 1.0.2:
-* Added Dynamic Downsize for the Vector to save memory (Useful for Memory Constrained Environments Such As Arduino)
-* Added This ChangeLog :)   
-* Please Note, This Library Has not been Tested in any Shape or form, USE AT YOUR OWN RISK
-* Although this library has not been tested, We do encourage you to use this library so we can find bugs and fix them.
-### Version 1.0.3:
-* Updated Included Libraries to Latest Version
-* Added merge Function that allows you to merge two Hashtables together
-### Version 1.0.4:
-* Fixed Issue with get function: Conversion from 'int' to 'const String' is ambiguous. -> Issue appears to happen when you use the get function with a int as the key
-* Fixed Hashing Issue: Hashing was not working correctly, causing the get function to not work correctly
-* Added containsKey() Function: This function allows you to check if a key exists in the Hashtable
-* Added containsValue() Function: This function allows you to check if a value exists in the Hashtable
-### Version 1.0.5:
-* Added new Iteration Feature to the library
-* Feature is untested
-### Version 1.0.6:
-* Repaired Iterator so it now works properly [Tested-Using-Properties-Library]
-* Added elements() function to return the number of elements currently on the table.
-* Adjusted size() function to return current capacity
-* Adjusted clear() function to properly clear the table [Tested-Using-Properties-Library]
-### Version 1.0.7:
-* New Overloaded Constructor to allow you to set the initial capacity and load factor
-* Added new loadFactor() function to return the current calculated load factor
-* Added new checkLoadFactorAndRehash() which checks the load factor and rehashes the table if needed
-* Added new bucketCount() function to return the number of buckets in the table
-* Added new bucketSize() function to return the size of a bucket
-* All new functions are untested, please report any bugs you find!
-* These functions are desinged to open up the library to allow you to use it in more ways, such as using it as a hashset
-### Version 1.0.8: 
-* Added [HASHTABLE]: to the front of each Serial.println() statement to make it easier to debug.
-### Version 1.0.9: 
-* Modified the Constructor to accept a boolean value to allow you to disable the Serial.print() statements
-* Added support for 3 new types: float, double, boolean
-* Please note you can add your own specializations for other types if you wish, please see the README.md for more information          
-### Version 1.1.0: 
-* Added new exists() Function that only takes in 1 parameter, the key, this function returns a boolean value
-* Added new values() Function that returns a SimpleVector of all the values in the Hashtable
-* Added function comments.
-### Version 1.1.1: 
-* Emergency Patch: Fixed an issue where the Constructor wasnt properly overloaded.
-* Adjusted Library Keywords
-### Version 1.1.2: 
-* Added new getElement() Function that returns an element at a specific index in the Hashtable
-### Version 1.1.3-BETA: 
-* Added New getKey() Function for Iterator
-* Added New getValue() Function for Iterator
-* Added New find() Function for Iterator.
-### Version 1.1.3: 
-* RESOLVED ISSUE: Iterator Iterates out of bounds (Issue #85)
-* RESOLVED ISSUE: Resizing corrupts data in hashtable (Issue #81)
-* RESOLVED ISSUE: get() and getElement() returning incorrectly (Issue #82)
-* Added new operator[] function that allows you to access elements by index in the Hashtable
-* Added new getBucket() function that returns the bucket at a specific index in the Hashtable
-* Added new getBucketSize() function that returns the size of a bucket at a specific index in the Hashtable
-* Added new debugIterator() function that iterates the table and prints out the [key, value] pairs.
-* Adjusted Iterator operator* function. 
-[FROM THIS]
-```cpp
-    KeyValuePair operator*() const {
-        
-        return KeyValuePair{currentEntry->key, currentEntry->value};
-    }
-```
-[TO THIS]
-```cpp
-    KeyValuePair operator*() const {
-        if (!currentEntry) {
-            return KeyValuePair{"", ""}; // Return an empty key-value pair if invalid
-        }
-        return KeyValuePair{currentEntry->key, currentEntry->value};
-    }
-```
-This is to make sure that empty data is printed as empty and not garbage data.
-* Adjusted begin() function to return end() instead of 
-```cpp 
-return Iterator(this, TABLE_SIZE, nullptr);
-```
-which is exactly what end() already has inside. This is just to be neater.
-### Version 1.1.4: - BETA [CURRENT-RELEASE]
-* Removed unnecessary print statements left behind from testing. 
-* Update is being used to properly progress Arduino Library Manager to next available version due to an error in last update creation. 
-* No other changes made.
-
-
-
-
-## Example
-
-Here's an example of how to use the `Hashtable` class:
-
-```cpp
-#include <Hashtable.h>
-#include <Arduino.h> // IF YOU ARE USING ARDUNINO's IDE, IGNORE THIS LINE
-int main() {
-    Hashtable<int, String> dictionary;
-
-    // Add key-value pairs to the hash table
-    dictionary.put(1, "One");
-    dictionary.put(2, "Two");
-    dictionary.put(3, "Three");
-
-    // Retrieve values using keys
-    String value = dictionary.getElement(2);
-    Serial.println("Value for key 2: " + value);
-
-    //Another way of retrieving values using keys
-    String* value = dictionary.get(3);
-    if (value != nullptr) {
-        Serial.println("Value of key1: " + *value);
-    } else {
-        Serial.println("Key1 not found");
-    }
-
-    // Remove a key-value pair
-    dictionary.remove(1);
-
-    // Check if the hash table is empty
-    if (dictionary.isEmpty()) {
-        Serial.println("Hash table is empty.");
-    } else {
-        Serial.println("Hash table is not empty." );
-    }
-
-    // Iterate through the keys
-    for (auto it = dictionary.begin(); it != dictionary.end(); ++it) {
-        auto kv = *it;
-        Serial.print("Iterator output: Key: ");
-        Serial.print(kv.key);
-        Serial.print(", Value: ");
-        Serial.println(kv.value);
-    }
-
-    //inbuilt iterator/debug tool
-    dictionary.debugIterator();
-
-    //Verify Bucket Data
-    void debugTable() {
-        for (int i = 0; i < dictionary.bucketCount(); ++i) {
-            Serial.print("Bucket ");
-            Serial.print(i);
-            Serial.print(": ");
-            auto entry = dictionary.getBucket(i); // Use a method to get the bucket by index
-            while (entry != nullptr) {
-                Serial.print(entry->key + " -> " + entry->value + ", ");
-                entry = entry->next;
-            }
-            Serial.println();
-        }
-    }
-
+    Serial.print("Temperature: ");
+    Serial.println(*hashTable.get("Temperature"));
 }
 
+void loop() {
+    // Your logic here
+}
 ```
+
+### 🔹 **Checking and Removing Elements**
+```cpp
+if (hashTable.exists("Humidity")) {
+    Serial.println("Humidity data exists!");
+    hashTable.remove("Humidity");
+}
+```
+
+### 🔹 **Iterating Over Entries**
+```cpp
+for (auto it = hashTable.begin(); it != hashTable.end(); ++it) {
+    auto kv = *it;
+    Serial.print("Key: ");
+    Serial.print(kv.key);
+    Serial.print(" | Value: ");
+    Serial.println(kv.value);
+}
+```
+
+---
+## 📜 **PlatformIO Changelog**
+### Latest Version:
+- **v1.1.4** [BETA] (2025-02)
+             - README.md has been updated
+  
+
+
+### Previous Versions:
+- **v1.0.0** - Initial Release
+- **v1.0.1** - Added Examples for how the library works (Example.cpp)(Example2.cpp)
+- **v1.0.2** - Added Dynamic Downsize for the Vector to save memory (Useful for Memory Constrained Environments Such As Arduino)
+
+- **v1.0.3** - Updated Included Libraries to Latest Version
+             - Added merge Function that allows you to merge two Hashtables together
+
+- **v1.0.4** - Fixed Issue with get function: Conversion from 'int' to 'const String' is ambiguous. -> Issue appears to happen when you use the get function with a int as the key.
+             - Fixed Hashing Issue: Hashing was not working correctly, causing the get function to not work.
+             - Added containsKey() Function: This function allows you to check if a key exists in the Hashtable
+             - Added containsValue() Function: This function allows you to check if a value exists in the Hashtable
+
+- **v1.0.5** - Added new Iteration Feature to the library [UNTESTED]
+- **v1.0.6** - Repaired Iterator so it now works properly [Tested-Using-Properties-Library]
+             - Added elements() function to return the number of elements currently on the table.
+             - Adjusted size() function to return current capacity
+             - Adjusted clear() function to properly clear the table [Tested-Using-Properties-Library]
+
+- **v1.0.7** - New Overloaded Constructor to allow you to set the initial capacity and load factor
+             - Added new loadFactor() function to return the current calculated load factor
+             - Added new checkLoadFactorAndRehash() which checks the load factor and rehashes the table if needed.
+             - Added new bucketCount() function to return the number of buckets in the table
+             - Added new bucketSize() function to return the size of a bucket.
+             - All new functions are untested, please report any bugs you find!
+             - These functions are desinged to open up the library to allow you to use it in more ways, such as using it as a hashset.
+
+- **v1.0.8** - Added [HASHTABLE]: to the front of each Serial.println() statement to make it easier to debug.
+
+- **v1.0.9** - Modified the Constructor to accept a boolean value to allow you to disable the Serial.print() statements.
+             - Added support for 3 new types: float, double, boolean
+             - Please note you can add your own specializations for other types if you wish, please see the README.md for more information.
+
+- **v1.1.0** - Added new exists() Function that only takes in 1 parameter, the key, this function returns a boolean value
+             - Added new values() Function that returns a SimpleVector of all the values in the Hashtable
+             - Added function comments.
+
+- **v1.1.1** - Emergency Patch: Fixed an issue where the Constructor wasnt properly overloaded.
+             - Adjusted Library Keywords
+
+- **v1.1.2** - Added new getElement() Function that returns an element at a specific index in the Hashtable (Please do not get confused between getElement and get... get returns a pointer)
+
+- **v1.1.3** [BETA]
+             - Added New getKey() Function for Iterator
+             - Added New getValue() Function for Iterator
+             - Added New find() Function for Iterator.
+
+- **v1.1.3**
+             - RESOLVED ISSUE: Iterator Iterates out of bounds (Issue #85)
+             - RESOLVED ISSUE: Resizing corrupts data in hashtable (Issue #81)
+             - RESOLVED ISSUE: get() and getElement() returning incorrectly (Issue #82)
+             - Added new operator[] function that allows you to access elements by index in the Hashtable
+             - Added new getBucket() function that returns the bucket at a specific index in the Hashtable
+             - Added new getBucketSize() function that returns the size of a bucket at a specific index in the Hashtable
+             - Added new debugIterator() function that iterates the table and prints out the [key, value] pairs.
+             - Adjusted Iterator operator* function. 
+
+[FROM THIS]
+```cpp
+    KeyValuePair operator*() const {
+        
+        return KeyValuePair{currentEntry->key, currentEntry->value};
+    }
+```
+[TO THIS]
+```cpp
+    KeyValuePair operator*() const {
+        if (!currentEntry) {
+            return KeyValuePair{"", ""}; // Return an empty key-value pair if invalid
+        }
+        return KeyValuePair{currentEntry->key, currentEntry->value};
+    }
+```
+This is to make sure that empty data is printed as empty and not garbage data.
+ - Adjusted begin() function to return end() instead of 
+```cpp 
+return Iterator(this, TABLE_SIZE, nullptr);
+```
+which is exactly what end() already has inside. This is just to be neater.
+
+---
+## 📜 **Arduino Changelog**
+### Latest Version:
+- **v1.0.4** [BETA] (2025-02) [ON-PAR] -> Platformio v1.1.4 [BETA]
+             - README.md has been updated
+            
+
+### Previous Versions:
+- **v1.0.0** - Initial release [ON-PAR] -> Platformio v1.1.2
+- **v1.0.2** 
+             - Added New getKey() Function for Iterator
+             - Added New getValue() Function for Iterator
+             - Added New find() Function for Iterator.
+             - [NOTE]: All 3 functions are not tested and should be used with Caution. 
+
+- **v1.0.3** [ON-PAR] -> Platformio v1.1.3
+              - RESOLVED ISSUE: Iterator Iterates out of bounds (Issue #85)
+              - RESOLVED ISSUE: Resizing corrupts data in hashtable (Issue #81)
+              - RESOLVED ISSUE: get() and getElement() returning incorrectly (Issue #82)
+              - Added new operator[] function that allows you to access elements by index in the Hashtable
+              - Added new getBucket() function that returns the bucket at a specific index in the Hashtable
+              - Added new getBucketSize() function that returns the size of a bucket at a specific index in the Hashtable
+              - Added new debugIterator() function that iterates the table and prints out the [key, value] pairs.
+              - Adjusted Iterator operator* function. 
+
+[FROM THIS]
+```cpp
+    KeyValuePair operator*() const {
+        
+        return KeyValuePair{currentEntry->key, currentEntry->value};
+    }
+```
+[TO THIS]
+```cpp
+    KeyValuePair operator*() const {
+        if (!currentEntry) {
+            return KeyValuePair{"", ""}; // Return an empty key-value pair if invalid
+        }
+        return KeyValuePair{currentEntry->key, currentEntry->value};
+    }
+```
+This is to make sure that empty data is printed as empty and not garbage data.
+ - Adjusted begin() function to return end() instead of 
+```cpp 
+return Iterator(this, TABLE_SIZE, nullptr);
+```
+which is exactly what end() already has inside. This is just to be neater.
+
+
+
+---
+## 💖 **Support My Work**  
+If you find this library useful, consider supporting me:
+
+🔗 **[Donate via GoFundMe](https://gofund.me/923e5f10)**  
+💰 **Click the Sponsor Button** at the top of this repository!  
+
+---
+## 📜 **Final Notes**
+- This hashtable is optimized for Arduino but can be adapted for other environments.
+- It uses **chaining for collision handling** and supports **dynamic resizing**.
+- **Supports int, float, String, and custom key types** with specialized hash functions.
+
+🚀 **Enjoy coding with Hashtable!**
