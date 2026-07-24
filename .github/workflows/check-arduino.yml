@@ -10,6 +10,10 @@ on:
   workflow_dispatch:
   repository_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -18,11 +22,91 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Arduino Lint
-        uses: arduino/arduino-lint-action@v3
+      - name: Install Arduino Lint
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-lint/main/install.sh | BINDIR=/usr/local/bin sh
+
+      - name: Run Arduino Lint and capture logs
+        id: lint
+        shell: bash
+        run: |
+          set +e
+          arduino-lint \
+            --compliance specification \
+            --library-manager update \
+            --official \
+            --project-type library \
+            2>&1 | tee arduino-lint.log
+          LINT_EXIT_CODE=${PIPESTATUS[0]}
+
+          if grep -Eiq '(^|[^A-Z])ERROR([^A-Z]|$)' arduino-lint.log; then
+            echo "has_errors=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_errors=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "lint_exit_code=${LINT_EXIT_CODE}" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update lint issue on errors
+        if: steps.lint.outputs.has_errors == 'true' && github.event.pull_request.head.repo.fork != true
+        uses: actions/github-script@v8
+        env:
+          ISSUE_TITLE: "Arduino Lint errors detected"
         with:
-          compliance: specification
-          library-manager: update
-          # Always use this setting for official repositories. Remove for 3rd party projects.
-          official: true
-          project-type: library
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issueTitle = process.env.ISSUE_TITLE;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+
+            let log = fs.readFileSync('arduino-lint.log', 'utf8');
+            const maxLogChars = 45000;
+            if (log.length > maxLogChars) {
+              log = `${log.slice(0, maxLogChars)}\n\n... [truncated]`;
+            }
+
+            const body = [
+              'Arduino Lint reported error-level findings.',
+              '',
+              `- Workflow run: ${runUrl}`,
+              `- Commit: ${context.sha}`,
+              `- Trigger: ${context.eventName}`,
+              '',
+              '```text',
+              log,
+              '```'
+            ].join('\n');
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              creator: 'github-actions[bot]',
+              per_page: 100
+            });
+
+            const existing = issues.find((i) => i.title === issueTitle);
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title: issueTitle,
+                body,
+                labels: ['bug', 'ci']
+              });
+            }
+
+      - name: Fail job on lint errors
+        if: steps.lint.outputs.has_errors == 'true'
+        run: |
+          echo "Arduino Lint reported errors. See issue created/updated by workflow for full logs."
+          exit 1
