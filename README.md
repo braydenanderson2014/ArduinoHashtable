@@ -13,6 +13,13 @@ The `Hashtable` library provides an efficient way to store key-value pairs in an
 ---
 ## 📚 **API Reference**
 
+### 🔹 **Optional Feature Flags**
+
+| Flag | Description |
+|------|-------------|
+| `HT_NO_SERIAL` | Suppresses the library's `Serial` output, including `debugIterator()`, for environments where `Serial` is unavailable or not initialized. |
+| `HT_ENABLE_NUMERIC_LIMITS` | Enables the optional Numeric_Limits integration and the related memory/introspection APIs listed below. |
+
 ### 🔹 **Hashtable Methods**
 
 | Function | Description |
@@ -39,6 +46,16 @@ The `Hashtable` library provides an efficient way to store key-value pairs in an
 | `V& operator[](const K& key)` | Accesses elements by key. If key does not exist, inserts a new default value. Falls back to a static dummy reference if insertion fails. |
 | `const V& operator[](const K& key) const` | Read-only access by key. Returns a static default-constructed value if the key does not exist. |
 | `void debugIterator()` | Prints all key-value pairs in the hashtable using an iterator. |
+
+### 🔹 **Optional Numeric_Limits Methods**
+
+Available only when `HT_ENABLE_NUMERIC_LIMITS` is defined.
+
+| Function | Description |
+|----------|-------------|
+| `size_t memoryUsage() const` | Returns the bytes currently used by the table's top-level bucket array. |
+| `int theoreticalMaxElements() const` | Returns the theoretical maximum number of elements supported on the current platform. |
+| `float memoryUtilization() const` | Returns the current element count as a fraction of the theoretical maximum. |
 
 ---
 ## 🛠 **Usage Examples**
